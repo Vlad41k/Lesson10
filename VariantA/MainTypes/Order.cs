@@ -44,10 +44,11 @@ namespace VariantA
         public static void ShowNumber(Dictionary<int, Order> orders, Product product)
         {
             StringBuilder str = new("Номера заказов, содержащих \"" + product.Title + "\": ");
-            IEnumerable<int> numberQuery = from order in orders
-                                           from prod in order.Value.Products
-                                           where prod.Item.Title == product.Title
-                                           select order.Value.Number;
+            IEnumerable<int> numberQuery = orders.SelectMany(order => order.Value.Products,
+                                         (order, prod) => new { Orders = order,ProductsInOrder = prod })
+                                         .Where(order => order.ProductsInOrder.Item.Title == product.Title)
+                                         .Select(order => order.Orders.Value.Number)
+                                         .Distinct();
             foreach (int number in numberQuery)
                 str.Append(number + " ");
             Console.WriteLine(str.ToString());
@@ -59,11 +60,11 @@ namespace VariantA
         {
             StringBuilder str = new("Номера заказов, не содержащих \"" + product.Title +
                 "\", и заказанных " + date.ToString("d") + ": ");
-            IEnumerable<int> numberQuery = from order in orders
+            IEnumerable<int> numberQuery = (from order in orders
                                            from prod in order.Value.Products
                                            where order.Value.Date == date
                                            where prod.Item.Title != product.Title   
-                                           select order.Value.Number;
+                                           select order.Value.Number).Distinct();
             foreach (int number in numberQuery)
                     str.Append(number + " ");   
             Console.WriteLine(str.ToString());
