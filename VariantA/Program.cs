@@ -72,13 +72,12 @@ namespace VariantA
             Order.ShowNumber(Orders, monitor, new DateTime(2021, 10, 24)); // Вывод номеров заказов, не содержащих данный товар, и поступивших в заданную дату
             Console.ReadKey();
             Console.Clear();
-            CRUDOperations.ReadOrders("orders.txt");
-            JSONManagement.JSONSerialize(Orders);
-            Dictionary<int, Order> FileOrders = CRUDOperations.ReadOrders("orders.txt");
-            Dictionary<int, Order> JSONOrders = JSONManagement.JSONDeSerialize();
+            Dictionary<int, Order> FileOrders = CRUDOperations.ReadOrders("orders.txt"); // Чтение из фалйа 
+            JSONManagement.JSONSerialize(Orders); // Сериализация словаря
+            Dictionary<int, Order> JSONOrders = JSONManagement.JSONDeSerialize(); // Десериализация словаря
             foreach (var item in JSONOrders)
             {
-                Console.WriteLine(Order.ShowOrder(item.Value));
+                Console.WriteLine(Order.ShowOrder(item.Value)); // Вывод десериализованного словаря
             }
             Product.PriceChanged += OnPriceChanged; // Добавление обработчика
         }

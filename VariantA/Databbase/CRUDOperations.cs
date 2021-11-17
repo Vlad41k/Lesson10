@@ -8,7 +8,7 @@ namespace VariantA
 {
     class CRUDOperations
     {
-        public static string AddOrder(Order order)
+        public static string AddOrder(Order order) //  Метод для записи заказа в файл в определенном формате
         {
             StringBuilder stringBuilder = new StringBuilder("");
             stringBuilder.Append($"{order.Number}");
@@ -96,24 +96,24 @@ namespace VariantA
 
             StringBuilder path = new("");
             path.Append(@"database\" + filename); // Определение пути
-            string[] Text = File.ReadAllLines(path.ToString(), Encoding.Default); // Считать все строки в файле.
-            foreach (var Line in Text)
+            string[] Text = File.ReadAllLines(path.ToString(), Encoding.Default); // Считать все строки в файле в массив строк
+            foreach (var Line in Text) // Перебор каждой строки массива
             {
-                var Product = Line.Split(" | ");
-                int number = int.Parse(Product[0]);
-                for (int i = 1; i < Product.Length; i++)
+                var Product = Line.Split(" | "); // Разбитие по символу 
+                int number = int.Parse(Product[0]); // Чтение номера заказа
+                for (int i = 1; i < Product.Length; i++) //Перебор до конца массива 
                 {
-                    if (i + 3 < Product.Length)
+                    if (i + 3 < Product.Length) // Создание нового продукта при условии что он существует
                     {
                         SendProducts.Add(new ProductsInOrder(new(Product[i], Product[i + 1], int.Parse(Product[i + 2])), int.Parse(Product[i + 3])));
                         i += 3;
                     }
                 }
-                var date = Product[^1].Split('.');
-                SendOrder = new(ref SendProducts, new DateTime(int.Parse(date[2]), int.Parse(date[1]), int.Parse(date[0])));
+                var date = Product[^1].Split('.'); // Разбитие даты 
+                SendOrder = new(ref SendProducts, new DateTime(int.Parse(date[2]), int.Parse(date[1]), int.Parse(date[0]))); // Создание заказа на основе чтения
                 FileOrders.Add(number, SendOrder); // Добавление заказа в список заказов
             }
-            return FileOrders;
+            return FileOrders; // Возвращение словаря заказов
         }
     }
 }
